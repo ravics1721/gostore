@@ -1,3 +1,6 @@
 uvicorn
 fastapi
 python-dotenv
+sqlalchemy
+autopep8
+"passlib[bcrypt]"
