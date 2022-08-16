@@ -1,6 +1,6 @@
-uvicorn
-fastapi
-python-dotenv
-sqlalchemy
-autopep8
+uvicorn = "^0.18.2"
+fastapi = "^0.79.0"
+python-dotenv = "^0.20.0"
+sqlalchemy = "^1.4.20"
+autopep8 = "^1.7.0"
 "passlib[bcrypt]"
