@@ -1,10 +1,11 @@
 from uuid import UUID, uuid4
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException, status
 from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from passlib.hash import pbkdf2_sha256
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
+from uuid import UUID
 import models
 import db
 import schemas
@@ -57,6 +58,24 @@ def add_user(body: schemas.UserModel, db: Session = Depends(get_db)):
     return new_user
 
 
-@app.get("/user/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/users")
+def get_users(db: Session = Depends(get_db)):
+    users = db.query(models.User)\
+        .with_entities(
+        models.User.id,
+        models.User.name,
+        models.User.email)\
+        .all()
+    return users
+
+
+@app.get("/user/{user_id}")
+def get_user_by_id(user_id: UUID, db: Session = Depends(get_db)):
+    user = db.query(models.User)\
+        .with_entities(models.User.id, models.User.name, models.User.email)\
+        .filter(models.User.id == user_id)\
+        .first()
+
+    if not user:
+        raise HTTPException(status_code=400, detail="No user found")
+    return user
